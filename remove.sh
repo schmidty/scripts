@@ -1,17 +1,19 @@
 #!/usr/bin/env bash
 #
 # Safe file removal for UNIX/Linux BASH shells
+# (c) 2014 Matthew Schmidt <schmidty99203@gmail.com>
 #
 # This script is to be used by root user only!
 # It clears all users /home/{user}/.Trash files from cron job
 #
-# The following .bashrc (or .profile) function (see below) will replace a user's 'rm' functionality
+# The following .bashrc function (see below) will replace a user's 'rm' functionality
 # and remove all files in a safe manner to ~/.Trash in their home directory.
+# It should be added to their .bashrc file to be used properly.
 #
 
 DATE=`date +%F`
 NOW=`date '+%Y-%m-%d %H:%M:%S'`;
-USERS=`/usr/bin/awk -F':' '$3 >= 1000 && $1 !="nobody" { print $1; }' /etc/passwd`
+USERS=`awk -F':' '$3 >= 1000 && $1 !="nobody" { print $1; }' /etc/passwd`
 
 for USER in ${USERS[@]};
 do
@@ -25,9 +27,9 @@ do
 	fi
 done
 
-#mail -s "desktop remove for $DATE " "user123@gmail.com" <<< "remove.bash run on '/home/user/' files for $NOW "
+#mail -s "desktop remove for $DATE " "schmidty99203@gmail.com" <<< "remove.bash run on '/home/schmidty/' files for $NOW "
 
-# Put the following in ~/.bashrc or ~/.profile files
+# Put the following in ~/.bashrc file 
 # 
 # function rm () {
 #   local path

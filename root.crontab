@@ -20,17 +20,17 @@
 # For more information see the manual pages of crontab(5) and cron(8)
 # 
 # m h  dom mon dow   command
-@weekly /usr/bin/rsync -arv /home/user/Finances/important.txt /home/user/Dropbox/archive/important.txt
+@weekly /usr/bin/rsync -arv /home/schmidty/Finances/important.txt /home/schmidty/Dropbox/archive/important.txt
 
 # Remove all files in /home/{user}/.Trash on a weekly basis
 @weekly /root/bin/remove.sh
 
 # Copy important commands
-#@weekly /usr/bin/rsync -arv /home/user/Documents/linux.commands /home/user/Dropbox/archive/linux.commands
+#@weekly /usr/bin/rsync -arv /home/schmidty/Documents/linux.commands /home/schmidty/Dropbox/archive/linux.commands
 
 # daily archive
 @daily /root/bin/archive.sh
 
 # clean out ALL files from /tmp directory safely that are 30 minutes old
-@monthly /usr/bin/find /tmp -path "/tmp/*" -amin 30 -exec /bin/rm -rf {} +
+#@monthly /root/bin/removeRootTempDir.sh
 
