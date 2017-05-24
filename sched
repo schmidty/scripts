@@ -1,0 +1,64 @@
+#!/bin/bash
+#
+#
+
+
+# functions used
+day_extension() {
+    if [[  `expr $NUMBER % 10` -eq 1 ]]; then
+        echo 'st'
+    elif [[ `expr $NUMBER % 10` -eq 2 ]]; then
+        echo 'nd'
+    elif [[ `expr $NUMBER % 10` -eq 3 ]]; then
+        echo 'rd'
+    elif [[ `expr $NUMBER % 10` -ge 4  ||  `expr $NUMBER % 10` -eq 0 ]]; then 
+        echo 'th'
+	fi
+}
+
+# schedules directory
+USERNAME=`whoami`
+SCHED_DIR="/home/$USERNAME/five-star/schedules/"
+
+# create filename
+NEW_DATE=`date +'%Y%m%d'`
+FILENAME="schedule.$NEW_DATE.txt"
+
+# Get last file written variables
+LAST_FILENAME=`ls -t  $SCHED_DIR | head -1` 
+LAST_FILENAME_DATE=`echo "$LAST_FILENAME" | cut -c 10-17`
+LAST_FILENAME_DAY=`echo "$LAST_FILENAME" | cut -c 16-17`
+
+# remove header and lines up to blank line
+SOURCE_FILE="$SCHED_DIR$LAST_FILENAME"
+TARGET_FILE="$SCHED_DIR$FILENAME"
+
+# create source headers
+NUMBER=`printf %d $(echo "$LAST_FILENAME_DATE" | cut -c 7-8) | sed 's/ *$//g'`
+DEV=`day_extension`
+NEW_DATE_DM=`date +'%a %b %e' --date="$LAST_FILENAME_DATE"`
+NEW_DATE_YR=`date +'%Y' --date="$LAST_FILENAME_DATE"`
+FULL_HEADER_SOURCE=`printf "%s %s %s" $NEW_DATE_DM $DEV, $NEW_DATE_YR`
+
+# create target headers
+NUMBER=`printf %d $(echo "$NEW_DATE" | cut -c 7-8) | sed 's/ *$//g'`
+DEV=`day_extension`
+NEW_DATE_DM=`date +'%a %b %e'`
+NEW_DATE_YR=`date +'%Y'`
+FULL_HEADER_TARGET=`printf "%s %s %s" $NEW_DATE_DM $DEV, $NEW_DATE_YR`
+
+# Put both headers together
+FULL_HEADER=`echo $FULL_HEADER_SOURCE \- $FULL_HEADER_TARGET`
+
+# copy file (safely) with new filename from last dated file
+cp -n $SOURCE_FILE $TARGET_FILE
+
+# delete values up to first blank line in new file
+sed -i '1,/^$/d' $TARGET_FILE
+#sed -i '1d' $TARGET_FILE  # delete extra blank line
+
+# Append new header and close file and place cursor position at bottom of file
+sed -i "1i $FULL_HEADER" $TARGET_FILE
+
+# finished
+echo "New schedule file created for $FULL_HEADER_TARGET"
