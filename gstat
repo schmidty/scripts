@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+# 
+# Check the master branch status of a Git repo
+#
+
+# Git stuff
+REMOTE_BRANCH=origin;
+CURRENT_BRANCH=`/usr/bin/git branch | grep \* - | cut -c3-`
+
+# If we have parameter we check on that specific remote for the current branch
+if [ "$1" ] ;
+then
+	REMOTE_BRANCH="$1";
+fi
+
+# check to see if remote exists?
+REMOTE_EXISTS=`/usr/bin/git branch --all | grep $REMOTE_BRANCH`
+if [ "$REMOTE_EXISTS" = '' ];
+then
+	echo "The remote '$REMOTE_BRANCH' does not appear to exist?"
+	/usr/bin/git branch --all
+	exit;
+fi
+
+# Run the command!
+/usr/bin/git log --oneline -1 ; /usr/bin/git log --oneline -1  $REMOTE_BRANCH/$CURRENT_BRANCH
